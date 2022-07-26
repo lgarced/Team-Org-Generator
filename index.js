@@ -2,30 +2,32 @@
 const fs = require("fs");
 const { prompt } = require("inquirer");
 const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/intern");
+const Manager = require("./lib/manager");
 
-const employeeArr = [];
+const employees = [];
 
 const start = () => {
   prompt({
-    type:"list",
+    type: "list",
     name: "choices",
     message: "What would you like to do today?",
-    choices: ['Create an Employee' , 'Generate HTML document'] 
-  }).then(res => {
-    switch(res.choices){
-    case 'Create an Employee':
-      return createEmployee();
-    case 'Generate HTML document':
-      return generateHTML();
-    default:
-  }
-  })
-}
+    choices: ["Create an Employee", "Generate HTML document"],
+  }).then((res) => {
+    switch (res.choices) {
+      case "Create an Employee":
+        return createEmployee();
+      case "Generate HTML document":
+        return generateHTML();
+      default:
+    }
+  });
+};
 
 const additionalQuestions = {
   Engineer: {
     type: "input",
-    name: "githubInput",
+    name: "extra",
     message: "What is this engineer's github?",
     validate: (githubInput) => {
       if (githubInput) {
@@ -38,7 +40,7 @@ const additionalQuestions = {
   },
   Manager: {
     type: "input",
-    name: "extraOffice",
+    name: "extra",
     message: "What is this manager's office number?",
     validate: (extraOffice) => {
       if (extraOffice) {
@@ -51,7 +53,7 @@ const additionalQuestions = {
   },
   Intern: {
     type: "input",
-    name: "schoolInput",
+    name: "extra",
     message: "What is this intern's schoool?",
     validate: (schoolInpu) => {
       if (schoolInpu) {
@@ -64,7 +66,7 @@ const additionalQuestions = {
   },
 };
 
-const createEmployee= () => {
+const createEmployee = () => {
   prompt([
     {
       message: "What type of employee would you like to create?",
@@ -74,7 +76,7 @@ const createEmployee= () => {
     },
     {
       type: "input",
-      name: "nameInput",
+      name: "name",
       message: "What is the employee's name?",
       validate: (nameInput) => {
         if (nameInput) {
@@ -88,7 +90,7 @@ const createEmployee= () => {
     {
       message: "What is the employee's id?",
       type: "input",
-      name: "idInput",
+      name: "id",
       validate: (idInput) => {
         if (idInput) {
           return true;
@@ -100,7 +102,7 @@ const createEmployee= () => {
     },
     {
       type: "input",
-      name: "emailInput",
+      name: "email",
       message: "What is employee's email?",
       validate: (emailInput) => {
         if (emailInput) {
@@ -116,8 +118,20 @@ const createEmployee= () => {
 
     prompt(extraQuestions).then(({ extra }) => {
       console.log("extra value --- ", extra);
-
-      const newEmp = new Engineer(emp.name, emp.id, emp.email, extra);
+      let newEmp;
+      switch (emp.type) {
+        case "Engineer":
+          newEmp = new Engineer(emp.name, emp.id, emp.email, extra);
+          break;
+        case "Manager":
+          newEmp = new Manager(emp.name, emp.id, emp.email, extra);
+          break;
+        case "Intern":
+          newEmp = new Intern(emp.name, emp.id, emp.email, extra);
+          break;
+        default:
+          throw new Error("No employee has been created");
+      }
       employees.push(newEmp);
 
       console.log(`${emp.type} Created!`);
@@ -133,10 +147,11 @@ const generateHTML = () => {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>Employee Organization</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-</head>
+      <link style="./style.css">
+        </head>
 <body>
     <div class="p-4">
         <h1 class="text-center mb-5">EMPLOYEE DIRECTORY</h1>
@@ -155,12 +170,9 @@ const generateHTML = () => {
 
 start();
 
-
-
 // arr.map((currentItem, i) => {
 //   employeeArr[i] = new Employee(currentItem.name, currentItem.email);
 // });
-
 
 // inquirer
 //   .prompt(questions)

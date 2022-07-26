@@ -1,0 +1,8 @@
+
+* {
+    background: linear-gradient(to top, #fff1eb 0%, #ace0f9 100%);
+}
+.container-fluid {
+    border-radius: 25px;
+    background-color: rgb(37, 109, 242);
+}
