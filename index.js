@@ -54,7 +54,7 @@ const additionalQuestions = {
   Intern: {
     type: "input",
     name: "extra",
-    message: "What is this intern's schoool?",
+    message: "What is this intern's school?",
     validate: (schoolInpu) => {
       if (schoolInpu) {
         return true;
